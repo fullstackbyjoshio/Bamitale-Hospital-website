@@ -6,7 +6,8 @@ import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
 // Any new image added here will automatically appear on the site.
 const imageModules = import.meta.glob("/src/assets/gallery/*.{jpg,jpeg,png,webp,gif}", {
   eager: true,
-  as: "url",
+  query: "?url",
+  import: "default",
 });
 
 interface GalleryItem {
@@ -146,6 +147,7 @@ export function Gallery() {
                 alt={item.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
+                decoding="async"
               />
               {/* Hover Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-bamBlue/80 via-bamBlue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-6">
@@ -211,6 +213,8 @@ export function Gallery() {
                 src={items[selectedIndex].url}
                 alt={items[selectedIndex].title}
                 className="w-full h-full object-contain rounded-lg max-h-[70vh]"
+                fetchPriority="high"
+                decoding="async"
               />
               <div className="text-center mt-4">
                 <h3 className="text-white font-bold text-xl">
@@ -235,6 +239,8 @@ export function Gallery() {
                     src={item.url}
                     alt={item.title}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </button>
               ))}
