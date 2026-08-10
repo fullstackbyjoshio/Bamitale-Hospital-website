@@ -1,0 +1,6 @@
+﻿Problem,Fix
+**2.5MB PNG images**,Convert all to **WebP** (will drop to ~200-400KB each)
+**No lazy loading**,"Add `loading=""lazy""` to gallery images"
+**No responsive images**,Add `srcset` so mobile doesn't download desktop sizes
+**430KB JS bundle**,"Code-split heavy sections, audit unused shadcn components"
+**96KB CSS**,Purge unused Tailwind styles

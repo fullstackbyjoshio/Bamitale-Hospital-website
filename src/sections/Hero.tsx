@@ -33,7 +33,7 @@ export function Hero() {
             <span className="text-xs sm:text-sm font-semibold">Open 24 Hours</span>
           </motion.div>
 
-          {/* Headlines — BIGGER & BOLDER */}
+          {/* Headlines */}
           <div className="space-y-0 lg:space-y-1 mb-3 lg:mb-4">
             <motion.h1
               initial={{ opacity: 0, y: 40 }}
@@ -139,7 +139,7 @@ export function Hero() {
           </motion.div>
         </div>
 
-        {/* ─── RIGHT: BIG BOLD IMAGE ─── */}
+        {/* ─── RIGHT: HERO IMAGE ─── */}
         <div className="relative w-full sm:w-[50%] lg:w-[45%] h-[300px] sm:h-auto overflow-hidden bg-gray-100">
 
           {/* Curved divider */}
@@ -155,16 +155,21 @@ export function Hero() {
             />
           </svg>
 
-          {/* Full-bleed image */}
+          {/* Full-bleed image — LCP optimized */}
           <motion.div
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: "easeOut" }}
+            transition={{ delay: 0.1, duration: 0.8, ease: "easeOut" }}
             className="absolute inset-0"
           >
             <img
               src="/images/hospital-exterior.jpg"
-              alt="Bamitale Hospital Building"
+              alt="Bamitale Hospital building exterior in Sagamu, Ogun State — 24/7 private healthcare facility"
+              width={1200}
+              height={800}
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
               className="w-full h-full object-cover"
             />
             {/* Subtle bottom gradient for depth */}
