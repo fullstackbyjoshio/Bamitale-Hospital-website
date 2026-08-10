@@ -9,12 +9,9 @@ import {
   MapPin,
   Clock,
   User,
-  Mail,
-  Stethoscope,
   FileText,
   Send,
   MessageCircle,
-  ShieldCheck,
 } from "lucide-react";
 
 const departments = [
