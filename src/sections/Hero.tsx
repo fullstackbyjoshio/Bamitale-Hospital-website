@@ -155,7 +155,7 @@ export function Hero() {
             />
           </svg>
 
-          {/* Full-bleed image — LCP optimized */}
+          {/* Full-bleed image — LCP optimized with 400w/800w/srcSet */}
           <motion.div
             initial={{ opacity: 0, scale: 1.05 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -164,8 +164,8 @@ export function Hero() {
           >
             <img
               src="/images/hospital-exterior.webp"
-              srcSet="/images/hospital-exterior-800w.webp 800w, /images/hospital-exterior.webp 1200w"
-              sizes="(max-width: 1024px) 100vw, 50vw"
+              srcSet="/images/hospital-exterior-400w.webp 400w, /images/hospital-exterior-800w.webp 800w, /images/hospital-exterior.webp 1200w"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 45vw"
               width={1200}
               height={800}
               alt="Bamitale Hospital building exterior in Sagamu, Ogun State — 24/7 private healthcare facility"
