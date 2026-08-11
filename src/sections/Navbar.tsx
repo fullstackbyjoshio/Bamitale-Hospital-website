@@ -46,7 +46,7 @@ export function Navbar() {
             {/* Logo */}
             <a href="#home" className="flex-shrink-0">
               <img
-                src="/images/bam-logo.png"
+                src="/images/bam-logo.webp"
                 alt="Bamitale Hospital"
                 className="h-12 md:h-14 w-auto object-contain"
               />
@@ -123,7 +123,7 @@ export function Navbar() {
               <div className="flex flex-col h-full p-6">
                 <div className="flex justify-between items-center mb-8">
                   <img
-                    src="/images/bam-logo.png"
+                    src="/images/bam-logo.webp"
                     alt="Bamitale Hospital"
                     className="h-10 w-auto object-contain"
                   />

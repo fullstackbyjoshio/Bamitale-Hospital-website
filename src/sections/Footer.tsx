@@ -130,7 +130,7 @@ export function Footer() {
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
               <div className="col-span-2 md:col-span-4 lg:col-span-1 mb-4 lg:mb-0 text-center lg:text-left">
                 <img
-                  src="/images/bam-logo.png"
+                  src="/images/bam-logo.webp"
                   alt="Bamitale Hospital Logo"
                   width={112}
                   height={56}

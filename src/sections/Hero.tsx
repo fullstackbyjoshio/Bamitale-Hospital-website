@@ -163,7 +163,7 @@ export function Hero() {
             className="absolute inset-0"
           >
             <img
-              src="/images/hospital-exterior.jpg"
+              src="/images/hospital-exterior.webp"
               alt="Bamitale Hospital building exterior in Sagamu, Ogun State — 24/7 private healthcare facility"
               width={1200}
               height={800}
