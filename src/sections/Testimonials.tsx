@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Quote, Star } from "lucide-react";
-import { SEO } from "@/components/SEO";
 
 const testimonials = [
   {
@@ -51,74 +50,68 @@ const cardVariants = {
 
 export function Testimonials() {
   return (
-    <>
-      <SEO
-        title="Patient Testimonials & Reviews | Bamitale Hospital Sagamu"
-        description="Read real patient reviews for Bamitale Hospital in Sagamu. See why families trust us for maternity, emergency care, surgery, pediatrics, and general healthcare in Ogun State."
-      />
-      <section id="testimonials" className="bg-bamLight py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-14"
-          >
-            <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">
-              Testimonials
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">
-              What Our Patients Say
-            </h2>
-            <p className="text-bamGray text-lg max-w-2xl mx-auto">
-              Real stories from real patients who trust us with their health.
-            </p>
-          </motion.div>
+    <section id="testimonials" className="bg-bamLight py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
+          <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">
+            Testimonials
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">
+            What Our Patients Say
+          </h2>
+          <p className="text-bamGray text-lg max-w-2xl mx-auto">
+            Real stories from real patients who trust us with their health.
+          </p>
+        </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-          >
-            {testimonials.map((t) => (
-              <motion.div
-                key={t.name}
-                variants={cardVariants}
-                whileHover={{ y: -4, transition: { duration: 0.3 } }}
-                className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
-              >
-                <Quote className="w-10 h-10 text-bamSky/30 mb-4" />
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          {testimonials.map((t) => (
+            <motion.div
+              key={t.name}
+              variants={cardVariants}
+              whileHover={{ y: -4, transition: { duration: 0.3 } }}
+              className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm hover:shadow-lg transition-shadow duration-300"
+            >
+              <Quote className="w-10 h-10 text-bamSky/30 mb-4" />
 
-                <div className="flex gap-1 mb-4">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="w-5 h-5 fill-amber-400 text-amber-400"
-                    />
-                  ))}
+              <div className="flex gap-1 mb-4">
+                {Array.from({ length: t.rating }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 fill-amber-400 text-amber-400"
+                  />
+                ))}
+              </div>
+
+              <p className="text-bamDark leading-relaxed mb-6 text-[15px]">
+                "{t.quote}"
+              </p>
+
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div>
+                  <p className="font-bold text-bamBlue">{t.name}</p>
+                  <span className="inline-block mt-1 text-xs font-semibold text-bamGreen bg-bamGreen/10 px-3 py-1 rounded-full">
+                    {t.service}
+                  </span>
                 </div>
-
-                <p className="text-bamDark leading-relaxed mb-6 text-[15px]">
-                  "{t.quote}"
-                </p>
-
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                  <div>
-                    <p className="font-bold text-bamBlue">{t.name}</p>
-                    <span className="inline-block mt-1 text-xs font-semibold text-bamGreen bg-bamGreen/10 px-3 py-1 rounded-full">
-                      {t.service}
-                    </span>
-                  </div>
-                  <span className="text-bamGray text-sm">{t.time}</span>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-    </>
+                <span className="text-bamGray text-sm">{t.time}</span>
+              </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
   );
 }

@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ChevronLeft, ChevronRight, ZoomIn } from "lucide-react";
-import { SEO } from "@/components/SEO";
 
 const imageModules = import.meta.glob("/src/assets/gallery/*.{jpg,jpeg,png,webp,gif}", {
   eager: true,
@@ -13,6 +12,7 @@ interface GalleryItem {
   id: number;
   title: string;
   url: string;
+  baseName: string;
   span: string;
   aspectRatio: string;
 }
@@ -40,16 +40,19 @@ export function Gallery() {
   const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
 
   const items = useMemo<GalleryItem[]>(() => {
-    return Object.entries(imageModules).map(([path, url], index) => {
-      const filename = path.split("/").pop()?.replace(/\.[^/.]+$/, "") || "Image";
-      return {
-        id: index,
-        title: formatTitle(filename),
-        url: url as string,
-        span: getSpan(index),
-        aspectRatio: getAspectRatio(index),
-      };
-    });
+    return Object.entries(imageModules)
+      .filter(([path]) => !/-\d+w\.webp$/.test(path)) // exclude resized variants
+      .map(([path, url], index) => {
+        const baseName = path.split("/").pop()?.replace(/\.[^/.]+$/, "") || "Image";
+        return {
+          id: index,
+          title: formatTitle(baseName),
+          baseName,
+          url: url as string,
+          span: getSpan(index),
+          aspectRatio: getAspectRatio(index),
+        };
+      });
   }, []);
 
   const handleImageLoad = useCallback((id: number) => {
@@ -82,171 +85,170 @@ export function Gallery() {
 
   if (items.length === 0) {
     return (
-      <>
-        <SEO
-          title="Facility Gallery | Bamitale Hospital Sagamu, Ogun State"
-          description="View photos of Bamitale Hospital's modern facilities, patient wards, operating theatres, and medical equipment in Sagamu, Ogun State, Nigeria."
-        />
-        <section id="gallery" className="bg-white py-20 lg:py-28">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">Gallery</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">Our Facility</h2>
-            <p className="text-bamGray">
-              No images found. Add images to <code className="bg-gray-100 px-2 py-1 rounded text-sm">src/assets/gallery/</code>
-            </p>
-          </div>
-        </section>
-      </>
+      <section id="gallery" className="bg-white py-20 lg:py-28">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">Gallery</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">Our Facility</h2>
+          <p className="text-bamGray">
+            No images found. Add images to <code className="bg-gray-100 px-2 py-1 rounded text-sm">src/assets/gallery/</code>
+          </p>
+        </div>
+      </section>
     );
   }
 
   return (
-    <>
-      <SEO
-        title="Facility Gallery | Bamitale Hospital Sagamu, Ogun State"
-        description="View photos of Bamitale Hospital's modern facilities, patient wards, operating theatres, and medical equipment in Sagamu, Ogun State, Nigeria."
-      />
-      <section id="gallery" className="bg-white py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-14"
-          >
-            <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">Gallery</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">Our Facility</h2>
-            <p className="text-bamGray text-lg max-w-2xl mx-auto">
-              Take a look inside Bamitale Hospital — modern facilities designed for your care.
-            </p>
-          </motion.div>
+    <section id="gallery" className="bg-white py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
+          <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">Gallery</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">Our Facility</h2>
+          <p className="text-bamGray text-lg max-w-2xl mx-auto">
+            Take a look inside Bamitale Hospital — modern facilities designed for your care.
+          </p>
+        </motion.div>
 
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
-            className="grid grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[220px] gap-3 md:gap-4"
-          >
-            {items.map((item, index) => {
-              const isLoaded = loadedImages.has(item.id);
-              const isPriority = index < 4;
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }}
+          className="grid grid-cols-2 md:grid-cols-4 auto-rows-[200px] md:auto-rows-[220px] gap-3 md:gap-4"
+        >
+          {items.map((item, index) => {
+            const isLoaded = loadedImages.has(item.id);
+            const isPriority = index < 4;
+            const encodedBaseName = encodeURIComponent(item.baseName);
 
-              return (
-                <motion.div
+            return (
+              <motion.div
+                key={item.id}
+                variants={{
+                  hidden: { opacity: 0, scale: 0.9 },
+                  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+                }}
+                className={`relative group cursor-pointer overflow-hidden rounded-2xl ${item.span} ${item.aspectRatio}`}
+                onClick={() => setSelectedIndex(index)}
+              >
+                {!isLoaded && <div className="absolute inset-0 bg-gray-200 animate-pulse" />}
+
+                <img
+                  src={item.url}
+                  srcSet={`/images/gallery/${encodedBaseName}-400w.webp 400w, /images/gallery/${encodedBaseName}-800w.webp 800w, ${item.url} 1200w`}
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  width={400}
+                  height={300}
+                  alt={item.title}
+                  className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
+                    isLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                  loading={isPriority ? "eager" : "lazy"}
+                  decoding="async"
+                  fetchPriority={isPriority ? "high" : "auto"}
+                  onLoad={() => handleImageLoad(item.id)}
+                />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-bamBlue/80 via-bamBlue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-6">
+                  <h3 className="text-white font-bold text-lg">{item.title}</h3>
+                  <p className="text-white/80 text-sm">Click to expand</p>
+                </div>
+                <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <ZoomIn className="w-4 h-4 text-white" />
+                </div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
+
+      <AnimatePresence>
+        {selectedIndex !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md flex items-center justify-center"
+            onClick={closeModal}
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
+              aria-label="Close"
+            >
+              <X className="w-6 h-6 text-white" />
+            </button>
+
+            <button
+              onClick={(e) => { e.stopPropagation(); goPrev(); }}
+              className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
+              aria-label="Previous"
+            >
+              <ChevronLeft className="w-6 h-6 text-white" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); goNext(); }}
+              className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
+              aria-label="Next"
+            >
+              <ChevronRight className="w-6 h-6 text-white" />
+            </button>
+
+            <motion.div
+              key={selectedIndex}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="max-w-5xl max-h-[80vh] w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={items[selectedIndex].url}
+                srcSet={`/images/gallery/${encodeURIComponent(items[selectedIndex].baseName)}-400w.webp 400w, /images/gallery/${encodeURIComponent(items[selectedIndex].baseName)}-800w.webp 800w, ${items[selectedIndex].url} 1200w`}
+                sizes="90vw"
+                width={1200}
+                height={800}
+                alt={items[selectedIndex].title}
+                className="w-full h-full object-contain rounded-lg max-h-[70vh]"
+                fetchPriority="high"
+                decoding="async"
+              />
+              <div className="text-center mt-4">
+                <h3 className="text-white font-bold text-xl">{items[selectedIndex].title}</h3>
+              </div>
+            </motion.div>
+
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 overflow-x-auto max-w-[90vw] px-4 py-2">
+              {items.map((item, i) => (
+                <button
                   key={item.id}
-                  variants={{
-                    hidden: { opacity: 0, scale: 0.9 },
-                    visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
-                  }}
-                  className={`relative group cursor-pointer overflow-hidden rounded-2xl ${item.span} ${item.aspectRatio}`}
-                  onClick={() => setSelectedIndex(index)}
+                  onClick={(e) => { e.stopPropagation(); setSelectedIndex(i); }}
+                  className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                    i === selectedIndex ? "border-bamSky scale-110" : "border-transparent opacity-60 hover:opacity-100"
+                  }`}
                 >
-                  {!isLoaded && <div className="absolute inset-0 bg-gray-200 animate-pulse" />}
-
                   <img
                     src={item.url}
                     alt={item.title}
-                    className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-                      isLoaded ? "opacity-100" : "opacity-0"
-                    }`}
-                    loading={isPriority ? "eager" : "lazy"}
+                    width={64}
+                    height={64}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
                     decoding="async"
-                    fetchPriority={isPriority ? "high" : "auto"}
-                    onLoad={() => handleImageLoad(item.id)}
                   />
-
-                  <div className="absolute inset-0 bg-gradient-to-t from-bamBlue/80 via-bamBlue/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 md:p-6">
-                    <h3 className="text-white font-bold text-lg">{item.title}</h3>
-                    <p className="text-white/80 text-sm">Click to expand</p>
-                  </div>
-                  <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <ZoomIn className="w-4 h-4 text-white" />
-                  </div>
-                </motion.div>
-              );
-            })}
+                </button>
+              ))}
+            </div>
           </motion.div>
-        </div>
-
-        <AnimatePresence>
-          {selectedIndex !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-md flex items-center justify-center"
-              onClick={closeModal}
-            >
-              <button
-                onClick={closeModal}
-                className="absolute top-6 right-6 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
-                aria-label="Close"
-              >
-                <X className="w-6 h-6 text-white" />
-              </button>
-
-              <button
-                onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
-                aria-label="Previous"
-              >
-                <ChevronLeft className="w-6 h-6 text-white" />
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); goNext(); }}
-                className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors z-10"
-                aria-label="Next"
-              >
-                <ChevronRight className="w-6 h-6 text-white" />
-              </button>
-
-              <motion.div
-                key={selectedIndex}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="max-w-5xl max-h-[80vh] w-full mx-4"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <img
-                  src={items[selectedIndex].url}
-                  alt={items[selectedIndex].title}
-                  className="w-full h-full object-contain rounded-lg max-h-[70vh]"
-                  fetchPriority="high"
-                  decoding="async"
-                />
-                <div className="text-center mt-4">
-                  <h3 className="text-white font-bold text-xl">{items[selectedIndex].title}</h3>
-                </div>
-              </motion.div>
-
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 overflow-x-auto max-w-[90vw] px-4 py-2">
-                {items.map((item, i) => (
-                  <button
-                    key={item.id}
-                    onClick={(e) => { e.stopPropagation(); setSelectedIndex(i); }}
-                    className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                      i === selectedIndex ? "border-bamSky scale-110" : "border-transparent opacity-60 hover:opacity-100"
-                    }`}
-                  >
-                    <img
-                      src={item.url}
-                      alt={item.title}
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
-    </>
+        )}
+      </AnimatePresence>
+    </section>
   );
 }

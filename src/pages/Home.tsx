@@ -1,5 +1,4 @@
 import { lazy, Suspense } from "react";
-import { SEO } from "@/components/SEO";
 import { Navbar } from "@/sections/Navbar";
 import { Hero } from "@/sections/Hero";
 import { About } from "@/sections/About";
@@ -22,43 +21,37 @@ function SectionSkeleton({ className = "" }: { className?: string }) {
 
 export default function Home() {
   return (
-    <>
-      <SEO
-        title="Bamitale Hospital | Best Private Hospital in Sagamu, Ogun State Nigeria"
-        description="Bamitale Hospital is the best private hospital in Sagamu, Ogun State. 24/7 emergency care, maternity & antenatal services, laboratory, ultrasound, surgery, pediatric care, pharmacy & specialist consultations."
-      />
-      <main className="relative">
-        {/* Above the fold — load immediately */}
-        <Navbar />
-        <Hero />
-        <About />
-        <WhyChooseUs />
+    <main className="relative">
+      {/* Above the fold — load immediately */}
+      <Navbar />
+      <Hero />
+      <About />
+      <WhyChooseUs />
 
-        {/* Below the fold — lazy loaded */}
-        <Suspense fallback={<SectionSkeleton className="min-h-[500px]" />}>
-          <Services />
-        </Suspense>
+      {/* Below the fold — lazy loaded */}
+      <Suspense fallback={<SectionSkeleton className="min-h-[500px]" />}>
+        <Services />
+      </Suspense>
 
-        <Suspense fallback={<SectionSkeleton className="min-h-[400px]" />}>
-          <Testimonials />
-        </Suspense>
+      <Suspense fallback={<SectionSkeleton className="min-h-[400px]" />}>
+        <Testimonials />
+      </Suspense>
 
-        <Suspense fallback={<SectionSkeleton className="min-h-[600px]" />}>
-          <Gallery />
-        </Suspense>
+      <Suspense fallback={<SectionSkeleton className="min-h-[600px]" />}>
+        <Gallery />
+      </Suspense>
 
-        <Suspense fallback={<SectionSkeleton className="min-h-[500px]" />}>
-          <BookingForm />
-        </Suspense>
+      <Suspense fallback={<SectionSkeleton className="min-h-[500px]" />}>
+        <BookingForm />
+      </Suspense>
 
-        <Suspense fallback={<SectionSkeleton className="min-h-[400px]" />}>
-          <Contact />
-        </Suspense>
+      <Suspense fallback={<SectionSkeleton className="min-h-[400px]" />}>
+        <Contact />
+      </Suspense>
 
-        <Suspense fallback={<SectionSkeleton className="min-h-[300px]" />}>
-          <Footer />
-        </Suspense>
-      </main>
-    </>
+      <Suspense fallback={<SectionSkeleton className="min-h-[300px]" />}>
+        <Footer />
+      </Suspense>
+    </main>
   );
 }

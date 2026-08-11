@@ -10,7 +10,6 @@ import {
   Waves,
   FlaskConical,
 } from "lucide-react";
-import { SEO } from "@/components/SEO";
 
 const services = [
   {
@@ -76,59 +75,53 @@ const cardVariants = {
 
 export function Services() {
   return (
-    <>
-      <SEO
-        title="Medical Services | Bamitale Hospital Sagamu, Ogun State"
-        description="Comprehensive healthcare services at Bamitale Hospital: emergency care, maternity & childbirth, general surgery, cardiology, pediatrics, orthopedics, ultrasound, laboratory, and specialist consultations in Sagamu."
-      />
-      <section id="services" className="bg-white py-20 lg:py-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-14"
-          >
-            <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">
-              What We Offer
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">
-              Our Medical Services
-            </h2>
-            <p className="text-bamGray text-lg max-w-2xl mx-auto">
-              Comprehensive care across multiple specialties to meet all your healthcare needs.
-            </p>
-          </motion.div>
+    <section id="services" className="bg-white py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
+        >
+          <span className="text-bamGreen font-bold text-sm uppercase tracking-widest">
+            What We Offer
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-bamBlue mt-3 mb-4">
+            Our Medical Services
+          </h2>
+          <p className="text-bamGray text-lg max-w-2xl mx-auto">
+            Comprehensive care across multiple specialties to meet all your healthcare needs.
+          </p>
+        </motion.div>
 
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-          >
-            {services.map((service) => (
-              <motion.div
-                key={service.title}
-                variants={cardVariants}
-                whileHover={{ y: -6, transition: { duration: 0.3 } }}
-                className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-              >
-                <div className="w-14 h-14 rounded-xl bg-bamSky/10 flex items-center justify-center mb-5 group-hover:bg-bamBlue transition-colors duration-300">
-                  <service.icon className="w-7 h-7 text-bamSky group-hover:text-white transition-colors duration-300" />
-                </div>
-                <h3 className="text-lg font-bold text-bamDark mb-2 group-hover:text-bamBlue transition-colors">
-                  {service.title}
-                </h3>
-                <p className="text-bamGray text-sm leading-relaxed">
-                  {service.desc}
-                </p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-    </>
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {services.map((service) => (
+            <motion.div
+              key={service.title}
+              variants={cardVariants}
+              whileHover={{ y: -6, transition: { duration: 0.3 } }}
+              className="group bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+            >
+              <div className="w-14 h-14 rounded-xl bg-bamSky/10 flex items-center justify-center mb-5 group-hover:bg-bamBlue transition-colors duration-300">
+                <service.icon className="w-7 h-7 text-bamSky group-hover:text-white transition-colors duration-300" />
+              </div>
+              <h3 className="text-lg font-bold text-bamDark mb-2 group-hover:text-bamBlue transition-colors">
+                {service.title}
+              </h3>
+              <p className="text-bamGray text-sm leading-relaxed">
+                {service.desc}
+              </p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
   );
 }
