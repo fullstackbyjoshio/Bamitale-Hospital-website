@@ -48,6 +48,12 @@
     <!-- Preload hero image for LCP -->
     <link rel="preload" as="image" href="/images/hospital-exterior.webp" type="image/webp" fetchpriority="high" />
 
+    <!-- Preload logo (above-the-fold) -->
+    <link rel="preload" as="image" href="/images/bam-logo.webp" type="image/webp" />
+
+    <!-- Preload Google Fonts CSS (eliminates render-blocking) -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style" />
+
     <!-- Performance: Preconnect & DNS Prefetch -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

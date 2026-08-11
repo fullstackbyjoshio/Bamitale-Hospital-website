@@ -98,6 +98,8 @@ export function About() {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src="/images/about-care.jpg"
+                srcSet="/images/about-care-400w.webp 400w, /images/about-care-800w.webp 800w, /images/about-care.jpg 1200w"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 alt="Doctor caring for a young patient at Bamitale Hospital in Sagamu"
                 width={800}
                 height={600}

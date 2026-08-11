@@ -43,11 +43,16 @@ export function Navbar() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-[72px] md:h-[72px]">
-            {/* Logo */}
+            {/* Logo — uses smaller bam-logo-sm.webp */}
             <a href="#home" className="flex-shrink-0">
               <img
-                src="/images/bam-logo.webp"
+                src="/images/bam-logo-sm.webp"
                 alt="Bamitale Hospital"
+                width={101}
+                height={48}
+                fetchPriority="high"
+                loading="eager"
+                decoding="async"
                 className="h-12 md:h-14 w-auto object-contain"
               />
             </a>
@@ -123,8 +128,12 @@ export function Navbar() {
               <div className="flex flex-col h-full p-6">
                 <div className="flex justify-between items-center mb-8">
                   <img
-                    src="/images/bam-logo.webp"
+                    src="/images/bam-logo-sm.webp"
                     alt="Bamitale Hospital"
+                    width={101}
+                    height={48}
+                    loading="lazy"
+                    decoding="async"
                     className="h-10 w-auto object-contain"
                   />
                   <button
