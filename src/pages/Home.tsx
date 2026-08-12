@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navbar } from "@/sections/Navbar";
 import { Hero } from "@/sections/Hero";
 import { About } from "@/sections/About";
+import { AreasWeServe } from "@/sections/AreasWeServe";
 import { WhyChooseUs } from "@/sections/WhyChooseUs";
 
 // Lazy-load everything below the fold
@@ -26,6 +27,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About />
+      <AreasWeServe />
       <WhyChooseUs />
 
       {/* Below the fold — lazy loaded */}
