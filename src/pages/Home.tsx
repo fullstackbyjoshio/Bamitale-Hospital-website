@@ -4,6 +4,7 @@ import { Hero } from "@/sections/Hero";
 import { About } from "@/sections/About";
 import { AreasWeServe } from "@/sections/AreasWeServe";
 import { WhyChooseUs } from "@/sections/WhyChooseUs";
+import { FAQ } from "@/sections/FAQ";
 
 // Lazy-load everything below the fold
 const Services = lazy(() => import("@/sections/Services").then((m) => ({ default: m.Services })));
@@ -29,7 +30,7 @@ export default function Home() {
       <About />
       <AreasWeServe />
       <WhyChooseUs />
-
+      <FAQ />
       {/* Below the fold — lazy loaded */}
       <Suspense fallback={<SectionSkeleton className="min-h-[500px]" />}>
         <Services />
