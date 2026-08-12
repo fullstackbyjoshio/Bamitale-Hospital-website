@@ -178,22 +178,10 @@ export function Hero() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent" />
           </motion.div>
 
-          {/* Floating Decorative Circles */}
-          <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-8 lg:top-20 right-4 lg:right-20 w-10 lg:w-32 h-10 lg:h-32 rounded-full bg-white/10 z-10"
-          />
-          <motion.div
-            animate={{ y: [0, 20, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute bottom-16 lg:bottom-32 right-2 lg:right-10 w-6 lg:w-20 h-6 lg:h-20 rounded-full bg-white/20 z-10"
-          />
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-1/2 right-1/3 w-5 lg:w-16 h-5 lg:h-16 rounded-full bg-white/15 z-10"
-          />
+          {/* Floating Decorative Circles — CSS GPU animations, zero JS overhead */}
+          <div className="absolute top-8 lg:top-20 right-4 lg:right-20 w-10 lg:w-32 h-10 lg:h-32 rounded-full bg-white/10 z-10 animate-float-slow" />
+          <div className="absolute bottom-16 lg:bottom-32 right-2 lg:right-10 w-6 lg:w-20 h-6 lg:h-20 rounded-full bg-white/20 z-10 animate-float-medium" />
+          <div className="absolute top-1/2 right-1/3 w-5 lg:w-16 h-5 lg:h-16 rounded-full bg-white/15 z-10 animate-float-fast" />
         </div>
       </div>
     </section>

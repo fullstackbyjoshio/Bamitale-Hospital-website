@@ -71,16 +71,8 @@ export function Footer() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="bg-gradient-to-br from-[#0B2A5E] via-[#0E3A7A] to-[#062040] relative overflow-hidden"
       >
-        <motion.div
-          animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-bamSky/20 blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.12, 0.2, 0.12] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-bamBlue/30 blur-3xl"
-        />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-bamSky/20 blur-3xl animate-blob-1" />
+        <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] rounded-full bg-bamBlue/30 blur-3xl animate-blob-2" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
