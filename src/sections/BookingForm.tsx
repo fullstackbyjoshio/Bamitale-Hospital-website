@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronRight,
@@ -13,6 +13,7 @@ import {
   Send,
   MessageCircle,
 } from "lucide-react";
+import { useCookie } from "@/hooks/useCookie";
 
 const departments = [
   "Internal Medicine",
@@ -65,12 +66,26 @@ export function BookingForm() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [preferredDept, setPreferredDept] = useCookie("preferredDept", "");
+
+  // Pre-select last department on mount
+  useEffect(() => {
+    if (preferredDept && !formData.department) {
+      setFormData((prev) => ({ ...prev, department: preferredDept }));
+    }
+  }, [preferredDept]);
 
   const updateField = <K extends keyof FormData>(
     field: K,
     value: FormData[K]
   ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleDeptChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const dept = e.target.value;
+    updateField("department", dept);
+    if (dept) setPreferredDept(dept, 30);
   };
 
   const canProceed = () => {
@@ -333,9 +348,7 @@ export function BookingForm() {
                           aria-label="Select department"
                           required
                           value={formData.department}
-                          onChange={(e) =>
-                            updateField("department", e.target.value)
-                          }
+                          onChange={handleDeptChange}
                           className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm sm:col-span-2"
                         >
                           <option value="">Select Department *</option>

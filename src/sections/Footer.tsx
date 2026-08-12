@@ -36,6 +36,8 @@ const footerColumns = [
       { label: "Find Us", href: "#contact" },
       { label: "Emergency Care", href: "tel:07071919154" },
       { label: "Laboratory", href: "#services" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Terms & Conditions", href: "/terms" },
     ],
   },
 ];
@@ -182,10 +184,13 @@ export function Footer() {
                 ))}
               </div>
 
-              <p className="text-white/60 text-sm flex items-center gap-1">
+              <p className="text-white/60 text-sm flex items-center gap-1 flex-wrap justify-center">
                 &copy; {new Date().getFullYear()} Bamitale Hospital. Made by JclStudio with
                 <Heart className="w-3.5 h-3.5 text-bamRed fill-bamRed" />
-                in Sagamu, Ogun State
+                in Sagamu, Ogun State ·
+                <a href="/privacy" className="hover:text-white underline underline-offset-2 ml-1">Privacy</a>
+                <span>·</span>
+                <a href="/terms" className="hover:text-white underline underline-offset-2">Terms</a>
               </p>
             </div>
           </div>
