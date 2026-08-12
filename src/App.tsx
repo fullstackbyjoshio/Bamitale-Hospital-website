@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router';
 import { SEO } from '@/components/SEO';
+import { FloatingCallButton } from '@/components/FloatingCallButton';
 import Home from './pages/Home';
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
+      <FloatingCallButton />
     </>
   );
 }
