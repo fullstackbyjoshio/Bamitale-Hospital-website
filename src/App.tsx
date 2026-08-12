@@ -6,8 +6,8 @@ export default function App() {
   return (
     <>
       <SEO 
-        title="Bamitale Hospital | Best Private Hospital in Sagamu, Ogun State Nigeria"
-        description="Bamitale Hospital is the best private hospital in Sagamu, Ogun State. 24/7 emergency care, maternity & antenatal services, laboratory, ultrasound, surgery, pediatric care, pharmacy & specialist consultations."
+        title="Bamitale Hospital | Best Private Hospital in Sagamu, Ogun State"
+        description="Best private hospital in Sagamu, Ogun State. Bamitale offers 24/7 emergency care, maternity, surgery, lab, ultrasound & specialist services. Book online or call 0707 191 9154."
         canonical="https://bamitalehospital.com/"
       />
       <Routes>
