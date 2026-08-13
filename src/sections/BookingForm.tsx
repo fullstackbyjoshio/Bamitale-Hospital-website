@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  ChevronRight,
-  ChevronLeft,
-  Check,
   Calendar,
   Phone,
   MapPin,
   Clock,
   User,
-  FileText,
+  Mail,
   Send,
   MessageCircle,
+  Check,
+  Stethoscope,
+  FileText,
 } from "lucide-react";
 import { useCookie } from "@/hooks/useCookie";
 
@@ -37,38 +37,31 @@ interface FormData {
   fullName: string;
   email: string;
   phone: string;
-  patientType: "new" | "returning";
   department: string;
   preferredDate: string;
   preferredTime: string;
   reason: string;
-  consent: boolean;
 }
 
 const initialFormData: FormData = {
   fullName: "",
   email: "",
   phone: "",
-  patientType: "new",
   department: "",
   preferredDate: "",
   preferredTime: "",
   reason: "",
-  consent: false,
 };
-
-const stepLabels = ["Personal Info", "Appointment", "Review", "Confirm"];
 
 const FORMSPREE_ENDPOINT = "https://formspree.io/f/mjgnbgel";
 
 export function BookingForm() {
-  const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [preferredDept, setPreferredDept] = useCookie("preferredDept", "");
 
-  // Pre-select last department on mount
+  // Pre-select last department
   useEffect(() => {
     if (preferredDept && !formData.department) {
       setFormData((prev) => ({ ...prev, department: preferredDept }));
@@ -88,26 +81,16 @@ export function BookingForm() {
     if (dept) setPreferredDept(dept, 30);
   };
 
-  const canProceed = () => {
-    switch (step) {
-      case 0:
-        return formData.fullName && formData.email && formData.phone;
-      case 1:
-        return (
-          formData.department &&
-          formData.preferredDate &&
-          formData.preferredTime &&
-          formData.reason
-        );
-      case 2:
-        return formData.consent;
-      default:
-        return true;
-    }
-  };
+  const canSubmit =
+    formData.fullName &&
+    formData.phone &&
+    formData.department &&
+    formData.preferredDate &&
+    formData.preferredTime;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canSubmit) return;
     setSubmitting(true);
 
     try {
@@ -119,16 +102,15 @@ export function BookingForm() {
         },
         body: JSON.stringify({
           fullName: formData.fullName,
-          email: formData.email,
+          email: formData.email || "Not provided",
           phone: formData.phone,
-          patientType: formData.patientType,
           department: formData.department,
           preferredDate: formData.preferredDate,
           preferredTime: formData.preferredTime,
-          reason: formData.reason,
+          reason: formData.reason || "Not provided",
           _subject: `New Appointment: ${formData.fullName} — ${formData.department}`,
           _template: "table",
-          _replyto: formData.email,
+          _replyto: formData.email || "no-reply@bamitalehospital.com",
           _fromname: "Bamitale Hospital",
         }),
       });
@@ -136,7 +118,6 @@ export function BookingForm() {
       if (response.ok) {
         setSubmitted(true);
         setFormData(initialFormData);
-        setStep(0);
       } else {
         alert("Something went wrong. Please try again or call us directly.");
       }
@@ -145,23 +126,6 @@ export function BookingForm() {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const direction = 1;
-
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -300 : 300,
-      opacity: 0,
-    }),
   };
 
   if (submitted) {
@@ -186,10 +150,7 @@ export function BookingForm() {
               A copy has also been sent to your email.
             </p>
             <button
-              onClick={() => {
-                setSubmitted(false);
-                setStep(0);
-              }}
+              onClick={() => setSubmitted(false)}
               className="mt-6 text-bamSky hover:text-bamBlue font-semibold transition-colors"
             >
               Book Another Appointment
@@ -217,11 +178,12 @@ export function BookingForm() {
             Book an Appointment
           </h2>
           <p className="text-bamGray text-lg max-w-2xl mx-auto">
-            Fill out the form below and our team will contact you to confirm your appointment.
+            Fill in your details below and our team will contact you to confirm.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-[1fr_340px] gap-8">
+        <div className="grid lg:grid-cols-[1fr_340px] gap-8 items-start">
+          {/* ─── SIMPLE 1-STEP FORM ─── */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -229,304 +191,150 @@ export function BookingForm() {
             transition={{ duration: 0.6 }}
             className="bg-white rounded-2xl shadow-lg overflow-hidden"
           >
-            <div className="px-6 pt-6">
-              <div className="flex items-center justify-between mb-2">
-                {stepLabels.map((label, i) => (
-                  <button
-                    key={label}
-                    onClick={() => i < step && setStep(i)}
-                    disabled={i >= step}
-                    className={`flex flex-col items-center gap-1 transition-colors ${
-                      i < step
-                        ? "text-bamGreen cursor-pointer"
-                        : i === step
-                        ? "text-bamBlue"
-                        : "text-gray-300"
-                    }`}
+            <form onSubmit={handleSubmit} className="p-6 sm:p-8">
+              <div className="space-y-5">
+                {/* Name & Phone */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bamGray/50" />
+                    <input
+                      type="text"
+                      name="fullName"
+                      placeholder="Full Name *"
+                      required
+                      value={formData.fullName}
+                      onChange={(e) => updateField("fullName", e.target.value)}
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50"
+                    />
+                  </div>
+                  <div className="relative">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bamGray/50" />
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Phone Number *"
+                      required
+                      value={formData.phone}
+                      onChange={(e) => updateField("phone", e.target.value)}
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50"
+                    />
+                  </div>
+                </div>
+
+                {/* Email (optional) */}
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bamGray/50" />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email Address (optional)"
+                    value={formData.email}
+                    onChange={(e) => updateField("email", e.target.value)}
+                    className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50"
+                  />
+                </div>
+
+                {/* Department — click to select */}
+                <div className="relative">
+                  <Stethoscope className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bamGray/50" />
+                  <select
+                    name="department"
+                    aria-label="Select department"
+                    required
+                    value={formData.department}
+                    onChange={handleDeptChange}
+                    className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50 appearance-none cursor-pointer"
                   >
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                        i < step
-                          ? "bg-bamGreen text-white"
-                          : i === step
-                          ? "bg-bamBlue text-white"
-                          : "bg-gray-100 text-gray-400"
-                      }`}
+                    <option value="">Select Department *</option>
+                    {departments.map((d) => (
+                      <option key={d} value={d}>
+                        {d}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Date & Time — click to select */}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div className="relative">
+                    <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bamGray/50" />
+                    <input
+                      type="date"
+                      name="preferredDate"
+                      required
+                      value={formData.preferredDate}
+                      onChange={(e) =>
+                        updateField("preferredDate", e.target.value)
+                      }
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50 cursor-pointer"
+                    />
+                  </div>
+                  <div className="relative">
+                    <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-bamGray/50" />
+                    <select
+                      name="preferredTime"
+                      aria-label="Preferred time"
+                      required
+                      value={formData.preferredTime}
+                      onChange={(e) =>
+                        updateField("preferredTime", e.target.value)
+                      }
+                      className="w-full pl-10 pr-4 py-3.5 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50 appearance-none cursor-pointer"
                     >
-                      {i < step ? <Check className="w-4 h-4" /> : i + 1}
-                    </div>
-                    <span className="text-[10px] font-medium hidden sm:block">
-                      {label}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <div className="relative h-1.5 bg-gray-100 rounded-full mb-6">
-                <motion.div
-                  className="absolute left-0 top-0 h-full bg-bamGreen rounded-full"
-                  initial={false}
-                  animate={{ width: `${(step / 3) * 100}%` }}
-                  transition={{ duration: 0.4 }}
-                />
-              </div>
-            </div>
+                      <option value="">Preferred Time *</option>
+                      {timeSlots.map((t) => (
+                        <option key={t} value={t}>
+                          {t}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
-            <form onSubmit={handleSubmit} className="px-6 pb-6 min-h-[360px]">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={step}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.3 }}
+                {/* Reason — optional, short */}
+                <div className="relative">
+                  <FileText className="absolute left-3.5 top-3.5 w-4 h-4 text-bamGray/50" />
+                  <textarea
+                    name="reason"
+                    placeholder="Brief reason for visit (optional)"
+                    value={formData.reason}
+                    onChange={(e) => updateField("reason", e.target.value)}
+                    rows={2}
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm bg-gray-50/50 resize-none"
+                  />
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={!canSubmit || submitting}
+                  className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-base transition-all ${
+                    canSubmit && !submitting
+                      ? "bg-bamGreen hover:bg-emerald-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                  }`}
                 >
-                  {step === 0 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 mb-4">
-                        <User className="w-5 h-5 text-bamSky" />
-                        <h3 className="font-bold text-bamDark text-lg">
-                          Personal Information
-                        </h3>
-                      </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <input
-                          type="text"
-                          name="fullName"
-                          placeholder="Full Name *"
-                          required
-                          value={formData.fullName}
-                          onChange={(e) => updateField("fullName", e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm"
-                        />
-                        <input
-                          type="email"
-                          name="email"
-                          placeholder="Email Address *"
-                          required
-                          value={formData.email}
-                          onChange={(e) => updateField("email", e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm"
-                        />
-                        <input
-                          type="tel"
-                          name="phone"
-                          placeholder="Phone Number *"
-                          required
-                          value={formData.phone}
-                          onChange={(e) => updateField("phone", e.target.value)}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm"
-                        />
-                        <select
-                          name="patientType"
-                          aria-label="Patient type"
-                          value={formData.patientType}
-                          onChange={(e) =>
-                            updateField("patientType", e.target.value as "new" | "returning")
-                          }
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm"
-                        >
-                          <option value="new">New Patient</option>
-                          <option value="returning">Returning Patient</option>
-                        </select>
-                      </div>
-                    </div>
+                  {submitting ? (
+                    <>
+                      <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Submit Appointment Request
+                    </>
                   )}
+                </button>
 
-                  {step === 1 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 mb-4">
-                        <Calendar className="w-5 h-5 text-bamSky" />
-                        <h3 className="font-bold text-bamDark text-lg">
-                          Appointment Details
-                        </h3>
-                      </div>
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <select
-                          name="department"
-                          aria-label="Select department"
-                          required
-                          value={formData.department}
-                          onChange={handleDeptChange}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm sm:col-span-2"
-                        >
-                          <option value="">Select Department *</option>
-                          {departments.map((d) => (
-                            <option key={d} value={d}>
-                              {d}
-                            </option>
-                          ))}
-                        </select>
-                        <input
-                          type="date"
-                          name="preferredDate"
-                          required
-                          value={formData.preferredDate}
-                          onChange={(e) =>
-                            updateField("preferredDate", e.target.value)
-                          }
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm"
-                        />
-                        <select
-                          name="preferredTime"
-                          aria-label="Preferred time"
-                          required
-                          value={formData.preferredTime}
-                          onChange={(e) =>
-                            updateField("preferredTime", e.target.value)
-                          }
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm"
-                        >
-                          <option value="">Preferred Time *</option>
-                          {timeSlots.map((t) => (
-                            <option key={t} value={t}>
-                              {t}
-                            </option>
-                          ))}
-                        </select>
-                        <textarea
-                          name="reason"
-                          placeholder="Reason for Visit * (briefly describe your symptoms or concern)"
-                          required
-                          value={formData.reason}
-                          onChange={(e) => updateField("reason", e.target.value)}
-                          rows={3}
-                          className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-bamSky focus:ring-2 focus:ring-bamSky/20 outline-none transition-all text-sm sm:col-span-2 resize-none"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {step === 2 && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2 mb-4">
-                        <FileText className="w-5 h-5 text-bamSky" />
-                        <h3 className="font-bold text-bamDark text-lg">
-                          Review Your Information
-                        </h3>
-                      </div>
-                      <div className="bg-gray-50 rounded-xl p-4 space-y-3 text-sm">
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                          <ReviewItem label="Name" value={formData.fullName} />
-                          <ReviewItem label="Email" value={formData.email} />
-                          <ReviewItem label="Phone" value={formData.phone} />
-                          <ReviewItem
-                            label="Patient Type"
-                            value={formData.patientType === "new" ? "New" : "Returning"}
-                          />
-                          <ReviewItem
-                            label="Department"
-                            value={formData.department}
-                          />
-                          <ReviewItem
-                            label="Date"
-                            value={formData.preferredDate}
-                          />
-                          <ReviewItem
-                            label="Time"
-                            value={formData.preferredTime}
-                          />
-                          <ReviewItem
-                            label="Reason"
-                            value={formData.reason}
-                          />
-                        </div>
-                      </div>
-
-                      <label className="flex items-start gap-3 p-3 rounded-xl border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors">
-                        <input
-                          type="checkbox"
-                          checked={formData.consent}
-                          onChange={(e) => updateField("consent", e.target.checked)}
-                          className="w-5 h-5 mt-0.5 rounded border-gray-300 text-bamGreen focus:ring-bamGreen"
-                          required
-                        />
-                        <span className="text-sm text-bamGray leading-relaxed">
-                          I consent to Bamitale Hospital collecting and processing my personal information for the purpose of scheduling this appointment. I understand my data will be handled in accordance with the hospital's privacy policy.
-                        </span>
-                      </label>
-                    </div>
-                  )}
-
-                  {step === 3 && (
-                    <div className="text-center py-6">
-                      <div className="w-16 h-16 rounded-full bg-bamGreen/10 flex items-center justify-center mx-auto mb-4">
-                        <Send className="w-8 h-8 text-bamGreen" />
-                      </div>
-                      <h3 className="font-bold text-bamDark text-xl mb-3">
-                        Ready to Submit?
-                      </h3>
-                      <p className="text-bamGray mb-6">
-                        Click the button below to send your appointment request to our team.
-                      </p>
-                      <button
-                        type="submit"
-                        disabled={submitting}
-                        className="inline-flex items-center gap-2 bg-bamGreen hover:bg-emerald-600 text-white font-bold px-8 py-4 rounded-full transition-all hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {submitting ? (
-                          <>
-                            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            <MessageCircle className="w-5 h-5" />
-                            Submit Appointment
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </motion.div>
-              </AnimatePresence>
-
-              {step < 3 && (
-                <div className="pt-6 flex justify-between">
-                  <button
-                    type="button"
-                    onClick={() => setStep((s) => Math.max(0, s - 1))}
-                    disabled={step === 0}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                      step === 0
-                        ? "text-gray-300 cursor-not-allowed"
-                        : "text-bamGray hover:bg-gray-100"
-                    }`}
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStep((s) => Math.min(3, s + 1))}
-                    disabled={!canProceed()}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all ${
-                      canProceed()
-                        ? "bg-bamBlue hover:bg-bamSky text-white shadow-md hover:shadow-lg"
-                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    }`}
-                  >
-                    {step === 2 ? "Confirm" : "Next"}
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-              {step === 3 && (
-                <div className="pt-6 flex justify-center">
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm text-bamGray hover:bg-gray-100 transition-all"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Go Back
-                  </button>
-                </div>
-              )}
+                <p className="text-xs text-center text-bamGray">
+                  * Required fields. Our team will call you to confirm your appointment.
+                </p>
+              </div>
             </form>
           </motion.div>
 
+          {/* ─── QUICK CONTACT SIDEBAR ─── */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -593,14 +401,5 @@ export function BookingForm() {
         </div>
       </div>
     </section>
-  );
-}
-
-function ReviewItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="col-span-2 sm:col-span-1">
-      <span className="text-gray-400 text-xs block">{label}</span>
-      <span className="text-bamDark font-medium text-sm">{value}</span>
-    </div>
   );
 }
